@@ -13,5 +13,9 @@ model Post {
   title     String
   excerpt   String
   content   String
+  category  String
+  readTime  String
+  imageUrl  String
+  imageAlt  String
   createdAt DateTime @default(now())
 }

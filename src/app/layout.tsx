@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 
+import { CenterGlowBackground } from "@/components/center-glow-background";
+import { CursorLight } from "@/components/cursor-light";
 import { SmoothScrollProvider } from "@/components/smooth-scroll-provider";
 
 import "./globals.css";
@@ -24,7 +26,13 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <body className="min-h-full bg-zinc-50 text-zinc-950 dark:bg-zinc-950 dark:text-zinc-50">
-        <SmoothScrollProvider>{children}</SmoothScrollProvider>
+        <SmoothScrollProvider>
+          <div className="relative isolate min-h-screen overflow-hidden bg-zinc-50 dark:bg-zinc-950">
+            <CenterGlowBackground />
+            <CursorLight />
+            <div className="relative z-10">{children}</div>
+          </div>
+        </SmoothScrollProvider>
       </body>
     </html>
   );
