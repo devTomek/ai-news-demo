@@ -1,10 +1,15 @@
 import type { Metadata } from "next";
 
+import { SmoothScrollProvider } from "@/components/smooth-scroll-provider";
+
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "AI Daily Notes",
-  description: "A one-column AI news demo built with Next.js.",
+  title: {
+    default: "AI Daily Notes",
+    template: "%s | AI Daily Notes",
+  },
+  description: "Najnowsze wpisy o AI, produktach i narzędziach.",
 };
 
 export default function RootLayout({
@@ -19,7 +24,7 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <body className="min-h-full bg-zinc-50 text-zinc-950 dark:bg-zinc-950 dark:text-zinc-50">
-        {children}
+        <SmoothScrollProvider>{children}</SmoothScrollProvider>
       </body>
     </html>
   );
