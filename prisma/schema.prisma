@@ -14,7 +14,7 @@ model Post {
   excerpt   String
   content   String
   category  String
-  readTime  String
+  readTime  Int
   imageUrl  String
   imageAlt  String
   createdAt DateTime @default(now())

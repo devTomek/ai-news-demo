@@ -57,7 +57,7 @@ export default async function PostPage({ params }: PostPageProps) {
               {post.category}
             </span>
             <span>{publishedDate}</span>
-            <span>{post.readTime}</span>
+            <span>{post.readTime} min</span>
           </div>
 
           <h1 className="mt-5 text-4xl font-semibold leading-tight tracking-normal text-zinc-950 sm:text-5xl dark:text-zinc-50">
