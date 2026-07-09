@@ -45,7 +45,7 @@ const generatedPostDraftSchema = z.object({
     .describe("A short English search query for choosing an Unsplash image."),
   sources: z
     .array(generatedPostSourceSchema)
-    .min(2)
+    .min(1)
     .max(4)
     .describe(
       "Sources selected only from the provided source library. Do not invent URLs.",
@@ -104,7 +104,7 @@ export async function generatePostDraft(
             "Explain why the news is interesting, what changed, who may use it, and what practical or social consequences it may have.",
             "Choose a substantially different angle from the recent posts below. Do not reuse their titles, main thesis, or source URLs.",
             JSON.stringify({ recentPosts }),
-            "Use only the fetched research sources below as factual context for the post. Pick 2-4 relevant sources from them and return those exact title, publisher, and url values in the sources field.",
+            "Use only the fetched research sources below as factual context for the post. Pick 1-4 relevant sources from them and return those exact title, publisher, and url values in the sources field.",
             "Do not cite or return any source that is not present in fetchedResearchSources.",
             JSON.stringify({ fetchedResearchSources: researchSources }),
             "Write exclusively in Polish. Keep any necessary English product names unchanged, but do not use random foreign words or technical jargon.",
@@ -168,7 +168,7 @@ function validateGeneratedPostSources(
     .filter((source): source is ResearchSource => Boolean(source))
     .slice(0, 4);
 
-  if (selectedSources.length < 2) {
+  if (selectedSources.length < 1) {
     throw new Error("GenAI response did not include enough valid sources.");
   }
 
