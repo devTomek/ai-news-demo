@@ -9,6 +9,11 @@ export type ResearchSource = {
   publishedAt?: string;
 };
 
+export type RecentPostContext = {
+  title: string;
+  sourceUrls: string[];
+};
+
 type FeedConfig = {
   publisher: string;
   url: string;
@@ -38,39 +43,69 @@ const feedConfigs: FeedConfig[] = [
     url: "https://deepmind.google/discover/blog/rss.xml",
   },
   {
-    publisher: "Vercel",
-    url: "https://vercel.com/changelog/rss.xml",
+    publisher: "MIT Technology Review",
+    url: "https://www.technologyreview.com/topic/artificial-intelligence/feed",
   },
   {
-    publisher: "GitHub",
-    url: "https://github.blog/ai-and-ml/feed/",
+    publisher: "TechCrunch",
+    url: "https://techcrunch.com/category/artificial-intelligence/feed/",
   },
   {
-    publisher: "LangChain",
-    url: "https://blog.langchain.com/rss/",
+    publisher: "The Verge",
+    url: "https://www.theverge.com/rss/ai-artificial-intelligence/index.xml",
+  },
+  {
+    publisher: "IEEE Spectrum",
+    url: "https://spectrum.ieee.org/feeds/topic/robotics/fulltext",
+  },
+  {
+    publisher: "New Atlas",
+    url: "https://newatlas.com/robotics/rss/",
   },
 ];
 
 const researchKeywords = [
   "ai",
-  "agent",
-  "agents",
-  "llm",
-  "model",
-  "models",
-  "rag",
-  "eval",
-  "evaluation",
-  "search",
-  "security",
-  "developer",
-  "automation",
-  "inference",
-  "prompt",
-  "context",
+  "artificial intelligence",
+  "robot",
+  "robotics",
+  "humanoid",
+  "product",
+  "device",
+  "wearable",
+  "startup",
+  "science",
+  "healthcare",
+  "consumer",
+  "chip",
+  "hardware",
+  "autonomous",
+  "drone",
+  "factory",
+  "home",
+  "app",
+  "assistant",
+  "music",
+  "video",
+  "photo",
+  "education",
+  "work",
+  "travel",
+  "car",
+  "vehicle",
+  "gadget",
+  "toy",
+  "game",
+  "movie",
+  "shopping",
 ];
 
-export async function collectResearchSources(): Promise<ResearchSource[]> {
+export async function collectResearchSources(
+  recentPosts: RecentPostContext[] = [],
+): Promise<ResearchSource[]> {
+  const recentlyUsedUrls = new Set(
+    recentPosts.flatMap((post) => post.sourceUrls.map(normalizeUrl)),
+  );
   const feedResults = await Promise.allSettled(
     feedConfigs.map((feed) => collectFeedItems(feed)),
   );
@@ -78,6 +113,7 @@ export async function collectResearchSources(): Promise<ResearchSource[]> {
     result.status === "fulfilled" ? result.value : [],
   );
   const selectedItems = dedupeByUrl(items)
+    .filter((item) => !recentlyUsedUrls.has(normalizeUrl(item.url)))
     .filter(isRecentOrUndated)
     .sort(compareFeedItems)
     .slice(0, 8);
@@ -99,6 +135,7 @@ async function collectFeedItems(feed: FeedConfig): Promise<FeedItem[]> {
     .map((item) => mapFeedItem(item, feed.publisher))
     .filter((item): item is FeedItem => Boolean(item))
     .filter(matchesResearchTopic)
+    .filter((item) => !isDocumentationLike(item))
     .slice(0, 8);
 }
 
@@ -181,6 +218,28 @@ function matchesResearchTopic(item: FeedItem) {
   const haystack = `${item.title} ${item.summary}`.toLowerCase();
 
   return researchKeywords.some((keyword) => haystack.includes(keyword));
+}
+
+function isDocumentationLike(item: FeedItem) {
+  const haystack = `${item.title} ${item.url}`.toLowerCase();
+
+  return [
+    "/docs",
+    "documentation",
+    "api reference",
+    "changelog",
+    "release notes",
+    "sdk",
+    "developer",
+    "developers",
+    "benchmark",
+    "evaluation",
+    "inference",
+    "deployment",
+    "coding",
+    "code",
+    "github",
+  ].some((pattern) => haystack.includes(pattern));
 }
 
 function isRecentOrUndated(item: FeedItem) {

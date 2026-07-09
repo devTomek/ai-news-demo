@@ -2,6 +2,7 @@ import { NextRequest } from "next/server";
 import slugify from "slugify";
 
 import { generatePostDraft } from "@/lib/genai";
+import { getRecentPostContext } from "@/lib/posts";
 import { prisma } from "@/lib/prisma";
 import { collectResearchSources } from "@/lib/research";
 
@@ -28,8 +29,9 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    const researchSources = await collectResearchSources();
-    const draft = await generatePostDraft(researchSources);
+    const recentPosts = await getRecentPostContext();
+    const researchSources = await collectResearchSources(recentPosts);
+    const draft = await generatePostDraft(researchSources, recentPosts);
     const slug = await createUniqueSlug(draft.title);
     const post = await prisma.post.create({
       data: {

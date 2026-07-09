@@ -1,6 +1,7 @@
 import type { Post } from "@/generated/prisma/client";
 
 import { prisma } from "@/lib/prisma";
+import type { RecentPostContext } from "@/lib/research";
 
 export type PostListItem = Omit<
   Post,
@@ -49,6 +50,24 @@ export async function getPostBySlug(slug: string) {
     ...post,
     sources: parsePostSources(post.sources),
   };
+}
+
+export async function getRecentPostContext(
+  limit = 5,
+): Promise<RecentPostContext[]> {
+  const posts = await prisma.post.findMany({
+    orderBy: { createdAt: "desc" },
+    take: limit,
+    select: {
+      title: true,
+      sources: true,
+    },
+  });
+
+  return posts.map((post) => ({
+    title: post.title,
+    sourceUrls: parsePostSources(post.sources).map((source) => source.url),
+  }));
 }
 
 function parsePostSources(value: unknown): PostSource[] {
