@@ -2,8 +2,17 @@ import type { Post } from "@/generated/prisma/client";
 
 import { prisma } from "@/lib/prisma";
 
-export type PostListItem = Omit<Post, "id" | "content" | "createdAt"> & {
+export type PostListItem = Omit<
+  Post,
+  "id" | "content" | "createdAt" | "sources"
+> & {
   createdAt: string;
+};
+
+export type PostSource = {
+  title: string;
+  publisher: string;
+  url: string;
 };
 
 export async function getPosts(): Promise<PostListItem[]> {
@@ -28,8 +37,37 @@ export async function getPosts(): Promise<PostListItem[]> {
 }
 
 export async function getPostBySlug(slug: string) {
-  return prisma.post.findUnique({
+  const post = await prisma.post.findUnique({
     where: { slug },
+  });
+
+  if (!post) {
+    return null;
+  }
+
+  return {
+    ...post,
+    sources: parsePostSources(post.sources),
+  };
+}
+
+function parsePostSources(value: unknown): PostSource[] {
+  if (!Array.isArray(value)) {
+    return [];
+  }
+
+  return value.filter((source): source is PostSource => {
+    if (!source || typeof source !== "object") {
+      return false;
+    }
+
+    const maybeSource = source as Record<string, unknown>;
+
+    return (
+      typeof maybeSource.title === "string" &&
+      typeof maybeSource.publisher === "string" &&
+      typeof maybeSource.url === "string"
+    );
   });
 }
 

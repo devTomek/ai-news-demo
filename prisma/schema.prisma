@@ -17,5 +17,6 @@ model Post {
   readTime  Int
   imageUrl  String
   imageAlt  String
+  sources   Json     @default("[]")
   createdAt DateTime @default(now())
 }

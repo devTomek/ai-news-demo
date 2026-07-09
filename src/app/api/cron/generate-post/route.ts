@@ -3,6 +3,7 @@ import slugify from "slugify";
 
 import { generatePostDraft } from "@/lib/genai";
 import { prisma } from "@/lib/prisma";
+import { collectResearchSources } from "@/lib/research";
 
 export const dynamic = "force-dynamic";
 
@@ -27,7 +28,8 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    const draft = await generatePostDraft();
+    const researchSources = await collectResearchSources();
+    const draft = await generatePostDraft(researchSources);
     const slug = await createUniqueSlug(draft.title);
     const post = await prisma.post.create({
       data: {
@@ -39,6 +41,7 @@ export async function GET(request: NextRequest) {
         readTime: draft.readTime,
         imageUrl: pickImageUrl(slug),
         imageAlt: draft.imageAlt,
+        sources: draft.sources,
       },
     });
 

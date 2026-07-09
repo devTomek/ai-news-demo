@@ -84,6 +84,33 @@ export default async function PostPage({ params }: PostPageProps) {
             ))}
           </div>
         </div>
+
+        {post.sources.length > 0 ? (
+          <section className="relative mt-8 rounded-xl border border-white/70 bg-white/64 p-5 text-zinc-700 shadow-[0_18px_60px_rgba(15,23,42,0.08)] backdrop-blur-2xl before:pointer-events-none before:absolute before:inset-x-0 before:top-0 before:h-px before:bg-white/90 sm:p-7 dark:border-white/10 dark:bg-zinc-900/62 dark:text-zinc-200 dark:shadow-black/20 dark:before:bg-white/20">
+            <h2 className="text-sm font-semibold uppercase tracking-[0.18em] text-zinc-500 dark:text-zinc-400">
+              Źródła
+            </h2>
+            <ul className="mt-4 grid gap-3">
+              {post.sources.map((source) => (
+                <li key={source.url}>
+                  <a
+                    href={source.url}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="group block rounded-lg border border-zinc-200/80 bg-white/70 p-4 transition hover:border-blue-300 hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:border-white/10 dark:bg-zinc-950/40 dark:hover:border-cyan-700 dark:hover:bg-zinc-950/60"
+                  >
+                    <span className="text-xs font-medium text-zinc-500 dark:text-zinc-400">
+                      {source.publisher}
+                    </span>
+                    <span className="mt-1 block text-sm font-medium text-zinc-950 group-hover:underline group-hover:underline-offset-4 dark:text-zinc-50">
+                      {source.title}
+                    </span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </section>
+        ) : null}
       </article>
     </main>
   );
