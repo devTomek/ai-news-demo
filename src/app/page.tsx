@@ -24,6 +24,12 @@ export default async function HomePage() {
           <h1 className="mt-4 text-4xl font-semibold tracking-normal text-zinc-950 sm:text-5xl dark:text-zinc-50">
             AI Daily Notes
           </h1>
+          <p className="mt-3 text-sm text-zinc-500 dark:text-zinc-400">
+            Research i generowanie postów: llama-3.3-70b-versatile
+          </p>
+          <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
+            Automatyzacja: Vercel Cron, 1 post dziennie
+          </p>
         </div>
 
         <div className="mt-8 flex items-center justify-between gap-4 text-sm text-zinc-500 dark:text-zinc-400">
