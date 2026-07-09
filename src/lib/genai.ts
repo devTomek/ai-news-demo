@@ -29,8 +29,9 @@ const generatedPostDraftSchema = z.object({
     .describe("A one-sentence, non-technical post summary written in Polish."),
   content: z
     .string()
+    .min(800)
     .describe(
-      "The full post body written in Polish for non-technical readers. Use 4-6 short paragraphs separated by blank lines.",
+      "The full post body written in Polish for non-technical readers. It must have at least 800 characters. Use 4-6 short paragraphs separated by blank lines.",
     ),
   category: z.enum(postCategories),
   readTime: z
@@ -99,6 +100,7 @@ export async function generatePostDraft(
             "Generate one fresh post for the AI Daily Notes feed.",
             "The topic should be an interesting AI news item for regular readers: new products, robots, smart devices, apps, creative tools, healthcare uses, education, transport, home gadgets, entertainment, science stories, or everyday life changes.",
             "Do not write a technical article. Avoid APIs, SDKs, documentation, deployment, coding, developer tooling, benchmarks, model internals, infrastructure, or implementation details.",
+            "The content field must be at least 800 characters long.",
             "Explain why the news is interesting, what changed, who may use it, and what practical or social consequences it may have.",
             "Choose a substantially different angle from the recent posts below. Do not reuse their titles, main thesis, or source URLs.",
             JSON.stringify({ recentPosts }),
