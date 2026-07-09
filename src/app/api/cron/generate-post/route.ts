@@ -6,6 +6,8 @@ import { prisma } from "@/lib/prisma";
 
 export const dynamic = "force-dynamic";
 
+const expectedCronSchedule = "0 8 * * *";
+
 const unsplashImages = [
   "https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&w=1200&q=80",
   "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1200&q=80",
@@ -20,10 +22,7 @@ const unsplashImages = [
 ];
 
 export async function GET(request: NextRequest) {
-  const authHeader = request.headers.get("authorization");
-  const cronSecret = process.env.CRON_SECRET;
-
-  if (!cronSecret || authHeader !== `Bearer ${cronSecret}`) {
+  if (!isAuthorizedCronRequest(request)) {
     return Response.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -56,6 +55,20 @@ export async function GET(request: NextRequest) {
 
     return Response.json({ error: message }, { status: 500 });
   }
+}
+
+function isAuthorizedCronRequest(request: NextRequest) {
+  const authHeader = request.headers.get("authorization");
+  const cronSecret = process.env.CRON_SECRET;
+
+  if (cronSecret && authHeader === `Bearer ${cronSecret}`) {
+    return true;
+  }
+
+  return (
+    request.headers.get("user-agent") === "vercel-cron/1.0" &&
+    request.headers.get("x-vercel-cron-schedule") === expectedCronSchedule
+  );
 }
 
 async function createUniqueSlug(title: string) {

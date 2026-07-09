@@ -4,6 +4,8 @@ import type { Metadata } from "next";
 
 import { getPosts } from "@/lib/posts";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "AI Daily Notes",
   description: "Najnowsze wpisy o AI, automatyzacji, modelach i produktach.",
