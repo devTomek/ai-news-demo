@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
+import { Reveal } from "@/components/reveal";
 import { getPostBySlug } from "@/lib/posts";
 
 export const dynamic = "force-dynamic";
@@ -44,72 +45,82 @@ export default async function PostPage({ params }: PostPageProps) {
   return (
     <main className="min-h-screen">
       <article className="relative z-10 mx-auto flex w-full max-w-4xl flex-col px-5 py-12 sm:px-6 sm:py-16">
-        <Link
-          href="/"
-          className="w-fit text-sm font-medium text-zinc-500 transition hover:text-zinc-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:text-zinc-400 dark:hover:text-zinc-50"
-        >
-          Wróć do wpisów
-        </Link>
+        <Reveal>
+          <Link
+            href="/"
+            className="w-fit text-sm font-medium text-zinc-500 transition hover:text-zinc-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:text-zinc-400 dark:hover:text-zinc-50"
+          >
+            Wróć do wpisów
+          </Link>
+        </Reveal>
 
-        <header className="mt-8 border-b border-white/70 pb-8 dark:border-white/10">
-          <div className="flex flex-wrap items-center gap-x-3 gap-y-2 text-sm text-zinc-500 dark:text-zinc-400">
-            <span className="rounded-full bg-white/72 px-3 py-1 text-xs font-medium text-zinc-800 shadow-sm backdrop-blur dark:bg-zinc-900/72 dark:text-zinc-100">
-              {post.category}
-            </span>
-            <span>{publishedDate}</span>
-            <span>{post.readTime} min</span>
+        <Reveal delay={0.06}>
+          <header className="mt-8 border-b border-white/70 pb-8 dark:border-white/10">
+            <div className="flex flex-wrap items-center gap-x-3 gap-y-2 text-sm text-zinc-500 dark:text-zinc-400">
+              <span className="rounded-full bg-white/72 px-3 py-1 text-xs font-medium text-zinc-800 shadow-sm backdrop-blur dark:bg-zinc-900/72 dark:text-zinc-100">
+                {post.category}
+              </span>
+              <span>{publishedDate}</span>
+              <span>{post.readTime} min</span>
+            </div>
+
+            <h1 className="mt-5 text-4xl font-semibold leading-tight tracking-normal text-zinc-950 sm:text-5xl dark:text-zinc-50">
+              {post.title}
+            </h1>
+          </header>
+        </Reveal>
+
+        <Reveal delay={0.12}>
+          <div className="relative mt-8 aspect-[2/1] overflow-hidden rounded-xl border border-white/70 bg-white/64 shadow-[0_18px_60px_rgba(15,23,42,0.08)] backdrop-blur-2xl before:pointer-events-none before:absolute before:inset-x-0 before:top-0 before:z-10 before:h-px before:bg-white/90 dark:border-white/10 dark:bg-zinc-900/62 dark:shadow-black/20 dark:before:bg-white/20">
+            <Image
+              src={post.imageUrl}
+              alt={post.imageAlt}
+              fill
+              priority
+              sizes="(min-width: 896px) 896px, 100vw"
+              className="object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-white/10 dark:to-transparent" />
           </div>
+        </Reveal>
 
-          <h1 className="mt-5 text-4xl font-semibold leading-tight tracking-normal text-zinc-950 sm:text-5xl dark:text-zinc-50">
-            {post.title}
-          </h1>
-        </header>
-
-        <div className="relative mt-8 aspect-[2/1] overflow-hidden rounded-xl border border-white/70 bg-white/64 shadow-[0_18px_60px_rgba(15,23,42,0.08)] backdrop-blur-2xl before:pointer-events-none before:absolute before:inset-x-0 before:top-0 before:z-10 before:h-px before:bg-white/90 dark:border-white/10 dark:bg-zinc-900/62 dark:shadow-black/20 dark:before:bg-white/20">
-          <Image
-            src={post.imageUrl}
-            alt={post.imageAlt}
-            fill
-            priority
-            sizes="(min-width: 896px) 896px, 100vw"
-            className="object-cover"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-white/10 dark:to-transparent" />
-        </div>
-
-        <div className="relative mt-8 rounded-xl border border-white/70 bg-white/64 p-5 text-zinc-700 shadow-[0_18px_60px_rgba(15,23,42,0.08)] backdrop-blur-2xl before:pointer-events-none before:absolute before:inset-x-0 before:top-0 before:h-px before:bg-white/90 sm:p-7 dark:border-white/10 dark:bg-zinc-900/62 dark:text-zinc-200 dark:shadow-black/20 dark:before:bg-white/20">
-          <div className="space-y-6 text-base leading-8 sm:text-lg sm:leading-9">
-            {post.content.split("\n\n").map((paragraph) => (
-              <p key={paragraph}>{paragraph}</p>
-            ))}
+        <Reveal delay={0.18}>
+          <div className="relative mt-8 rounded-xl border border-white/70 bg-white/64 p-5 text-zinc-700 shadow-[0_18px_60px_rgba(15,23,42,0.08)] backdrop-blur-2xl before:pointer-events-none before:absolute before:inset-x-0 before:top-0 before:h-px before:bg-white/90 sm:p-7 dark:border-white/10 dark:bg-zinc-900/62 dark:text-zinc-200 dark:shadow-black/20 dark:before:bg-white/20">
+            <div className="space-y-6 text-base leading-8 sm:text-lg sm:leading-9">
+              {post.content.split("\n\n").map((paragraph) => (
+                <p key={paragraph}>{paragraph}</p>
+              ))}
+            </div>
           </div>
-        </div>
+        </Reveal>
 
         {post.sources.length > 0 ? (
-          <section className="relative mt-8 rounded-xl border border-white/70 bg-white/64 p-5 text-zinc-700 shadow-[0_18px_60px_rgba(15,23,42,0.08)] backdrop-blur-2xl before:pointer-events-none before:absolute before:inset-x-0 before:top-0 before:h-px before:bg-white/90 sm:p-7 dark:border-white/10 dark:bg-zinc-900/62 dark:text-zinc-200 dark:shadow-black/20 dark:before:bg-white/20">
-            <h2 className="text-sm font-semibold uppercase tracking-[0.18em] text-zinc-500 dark:text-zinc-400">
-              Źródła
-            </h2>
-            <ul className="mt-4 grid gap-3">
-              {post.sources.map((source) => (
-                <li key={source.url}>
-                  <a
-                    href={source.url}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="group block rounded-lg border border-zinc-200/80 bg-white/70 p-4 transition hover:border-blue-300 hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:border-white/10 dark:bg-zinc-950/40 dark:hover:border-cyan-700 dark:hover:bg-zinc-950/60"
-                  >
-                    <span className="text-xs font-medium text-zinc-500 dark:text-zinc-400">
-                      {source.publisher}
-                    </span>
-                    <span className="mt-1 block text-sm font-medium text-zinc-950 group-hover:underline group-hover:underline-offset-4 dark:text-zinc-50">
-                      {source.title}
-                    </span>
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </section>
+          <Reveal delay={0.24}>
+            <section className="relative mt-8 rounded-xl border border-white/70 bg-white/64 p-5 text-zinc-700 shadow-[0_18px_60px_rgba(15,23,42,0.08)] backdrop-blur-2xl before:pointer-events-none before:absolute before:inset-x-0 before:top-0 before:h-px before:bg-white/90 sm:p-7 dark:border-white/10 dark:bg-zinc-900/62 dark:text-zinc-200 dark:shadow-black/20 dark:before:bg-white/20">
+              <h2 className="text-sm font-semibold uppercase tracking-[0.18em] text-zinc-500 dark:text-zinc-400">
+                Źródła
+              </h2>
+              <ul className="mt-4 grid gap-3">
+                {post.sources.map((source) => (
+                  <li key={source.url}>
+                    <a
+                      href={source.url}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="group block rounded-lg border border-zinc-200/80 bg-white/70 p-4 transition hover:border-blue-300 hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:border-white/10 dark:bg-zinc-950/40 dark:hover:border-cyan-700 dark:hover:bg-zinc-950/60"
+                    >
+                      <span className="text-xs font-medium text-zinc-500 dark:text-zinc-400">
+                        {source.publisher}
+                      </span>
+                      <span className="mt-1 block text-sm font-medium text-zinc-950 group-hover:underline group-hover:underline-offset-4 dark:text-zinc-50">
+                        {source.title}
+                      </span>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          </Reveal>
         ) : null}
       </article>
     </main>
