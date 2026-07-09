@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Analytics } from "@vercel/analytics/next";
 
 import { CenterGlowBackground } from "@/components/center-glow-background";
 import { CursorLight } from "@/components/cursor-light";
@@ -33,6 +34,7 @@ export default function RootLayout({
             <div className="relative z-10">{children}</div>
           </div>
         </SmoothScrollProvider>
+        <Analytics />
       </body>
     </html>
   );
