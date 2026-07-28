@@ -61,8 +61,10 @@ export default async function HomePage() {
                           className="object-cover transition duration-500 group-hover:scale-105"
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/45 via-black/5 to-transparent" />
-                        <div className="absolute bottom-4 left-4 rounded-full bg-white/90 px-3 py-1 text-xs font-medium text-zinc-950 backdrop-blur dark:bg-zinc-950/80 dark:text-zinc-50">
-                          {post.category}
+                        <div className="absolute bottom-4 left-4 flex flex-wrap gap-2">
+                          <span className="rounded-full bg-white/90 px-3 py-1 text-xs font-medium text-zinc-950 backdrop-blur dark:bg-zinc-950/80 dark:text-zinc-50">
+                            Wygenerowane przez AI
+                          </span>
                         </div>
                       </div>
 

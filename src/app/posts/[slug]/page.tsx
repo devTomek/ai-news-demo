@@ -57,9 +57,6 @@ export default async function PostPage({ params }: PostPageProps) {
         <Reveal delay={0.06}>
           <header className="mt-8 border-b border-white/70 pb-8 dark:border-white/10">
             <div className="flex flex-wrap items-center gap-x-3 gap-y-2 text-sm text-zinc-500 dark:text-zinc-400">
-              <span className="rounded-full bg-white/72 px-3 py-1 text-xs font-medium text-zinc-800 shadow-sm backdrop-blur dark:bg-zinc-900/72 dark:text-zinc-100">
-                {post.category}
-              </span>
               <span>{publishedDate}</span>
               <span>{post.readTime} min</span>
             </div>
@@ -67,6 +64,9 @@ export default async function PostPage({ params }: PostPageProps) {
             <h1 className="mt-5 text-4xl font-semibold leading-tight tracking-normal text-zinc-950 sm:text-5xl dark:text-zinc-50">
               {post.title}
             </h1>
+            <span className="mt-4 inline-flex rounded-full bg-white/72 px-3 py-1 text-xs font-medium text-zinc-800 shadow-sm backdrop-blur dark:bg-zinc-900/72 dark:text-zinc-100">
+              Wygenerowane przez AI
+            </span>
           </header>
         </Reveal>
 
