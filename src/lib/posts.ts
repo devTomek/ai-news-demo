@@ -16,25 +16,48 @@ export type PostSource = {
   url: string;
 };
 
-export async function getPosts(): Promise<PostListItem[]> {
-  const posts = await prisma.post.findMany({
-    orderBy: { createdAt: "desc" },
-    select: {
-      slug: true,
-      title: true,
-      excerpt: true,
-      category: true,
-      createdAt: true,
-      readTime: true,
-      imageUrl: true,
-      imageAlt: true,
-    },
-  });
+export const POSTS_PER_PAGE = 10;
 
-  return posts.map((post) => ({
-    ...post,
-    createdAt: formatPostDate(post.createdAt),
-  }));
+const postListSelect = {
+  slug: true,
+  title: true,
+  excerpt: true,
+  category: true,
+  createdAt: true,
+  readTime: true,
+  imageUrl: true,
+  imageAlt: true,
+} as const;
+
+export type PostsPage = {
+  posts: PostListItem[];
+  totalCount: number;
+  totalPages: number;
+};
+
+export async function getPostsPage(page: number): Promise<PostsPage> {
+  const skip = (page - 1) * POSTS_PER_PAGE;
+
+  const [totalCount, rows] = await Promise.all([
+    prisma.post.count(),
+    prisma.post.findMany({
+      orderBy: { createdAt: "desc" },
+      skip,
+      take: POSTS_PER_PAGE,
+      select: postListSelect,
+    }),
+  ]);
+
+  const totalPages = Math.max(1, Math.ceil(totalCount / POSTS_PER_PAGE));
+
+  return {
+    posts: rows.map((post) => ({
+      ...post,
+      createdAt: formatPostDate(post.createdAt),
+    })),
+    totalCount,
+    totalPages,
+  };
 }
 
 export async function getPostBySlug(slug: string) {

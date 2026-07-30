@@ -1,9 +1,11 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 
+import { Pagination } from "@/components/pagination";
 import { Reveal } from "@/components/reveal";
-import { getPosts } from "@/lib/posts";
+import { getPostsPage } from "@/lib/posts";
 
 export const dynamic = "force-dynamic";
 
@@ -12,8 +14,19 @@ export const metadata: Metadata = {
   description: "Najnowsze wpisy o AI, automatyzacji, modelach i produktach.",
 };
 
-export default async function HomePage() {
-  const posts = await getPosts();
+interface HomePageProps {
+  searchParams: Promise<{ page?: string }>;
+};
+
+export default async function HomePage({ searchParams }: HomePageProps) {
+  const { page } = await searchParams;
+  const pageNumber = Number(page) || 1;
+  const { posts, totalCount, totalPages } =
+    await getPostsPage(pageNumber);
+
+  if (totalCount > 0 && pageNumber > totalPages) {
+    notFound();
+  }
 
   return (
     <main className="min-h-screen">
@@ -38,15 +51,15 @@ export default async function HomePage() {
         <Reveal delay={0.08}>
           <div className="mt-8 flex items-center justify-between gap-4 text-sm text-zinc-500 dark:text-zinc-400">
             <span>Najnowsze wpisy</span>
-            <span>{posts.length} postów</span>
+            <span>{totalCount} postów</span>
           </div>
         </Reveal>
 
-        {posts.length > 0 ? (
+        {posts.length > 0 && (
           <ul className="mt-4 grid gap-5">
             {posts.map((post, index) => (
               <li key={post.slug}>
-                <Reveal delay={0.14 + index * 0.06}>
+                <Reveal delay={0.14 + Math.min(index, 9) * 0.06}>
                   <Link
                     href={`/posts/${post.slug}`}
                     className="group block overflow-hidden rounded-xl border border-white/70 bg-white/64 text-zinc-950 shadow-[0_18px_60px_rgba(15,23,42,0.08)] backdrop-blur-2xl transition duration-300 before:pointer-events-none before:absolute before:inset-x-0 before:top-0 before:h-px before:bg-white/90 hover:-translate-y-1 hover:bg-white/76 hover:shadow-[0_24px_80px_rgba(59,130,246,0.2)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:border-white/10 dark:bg-zinc-900/62 dark:text-zinc-50 dark:shadow-black/20 dark:before:bg-white/20 dark:hover:bg-zinc-900/76 dark:hover:shadow-cyan-950/40"
@@ -87,7 +100,15 @@ export default async function HomePage() {
               </li>
             ))}
           </ul>
-        ) : (
+        )}
+
+        {posts.length > 0 && (
+          <Reveal delay={0.2}>
+            <Pagination page={pageNumber} totalPages={totalPages} />
+          </Reveal>
+        )}
+
+        {totalCount === 0 && (
           <Reveal delay={0.14}>
             <div className="mt-4 rounded-xl border border-white/70 bg-white/64 p-6 text-sm leading-6 text-zinc-600 shadow-[0_18px_60px_rgba(15,23,42,0.08)] backdrop-blur-2xl dark:border-white/10 dark:bg-zinc-900/62 dark:text-zinc-300">
               Brak wpisów. Wygeneruj pierwszy post, żeby rozpocząć feed.
